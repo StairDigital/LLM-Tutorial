@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI, Made Practical — A Training Studio for Professionals & Lawyers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#121316; --ink-2:#1a1c21; --ink-3:#23262d;
+  --paper:#f4f3ef; --surface:#ffffff; --surface-2:#fbfaf7;
+  --brass:#b9923b; --brass-2:#caa44a; --brass-soft:#ecdfc1; --brass-deep:#8f6f25;
+  --text:#1a1b1e; --muted:#6f7077; --muted-2:#9a9aa0;
+  --line:#e5e3dc; --line-dark:rgba(255,255,255,.12);
+  --good:#1f6f63;
+  --shadow:0 1px 2px rgba(20,20,25,.04), 0 12px 32px rgba(20,20,25,.07);
+  --shadow-lg:0 30px 80px rgba(10,10,15,.35);
+  --r:14px; --r-sm:10px;
+  --nav-h:60px;
+  --serif:"Fraunces",Georgia,"Times New Roman",serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper);color:var(--text);
+  font-family:var(--sans);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.1;margin:0;letter-spacing:-.01em}
+p{margin:0 0 1em}
+a{color:inherit}
+img{max-width:100%}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-deep);font-weight:500}
+.mono{font-family:var(--mono)}
+section{scroll-margin-top:calc(var(--nav-h) + 12px)}
+
+/* ---------- progress + nav ---------- */
+.progress{position:fixed;top:0;left:0;height:2px;width:0;background:var(--brass);z-index:120;transition:width .12s linear}
+.nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;background:rgba(244,243,239,.82);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line)}
+.nav.dark{background:rgba(18,19,22,.7);border-bottom-color:var(--line-dark)}
+.brandmark{font-family:var(--mono);font-size:13px;letter-spacing:.2em;font-weight:600;text-transform:uppercase;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.brandmark .logo-mark{height:23px;width:auto;display:block;flex:none}
+.brandmark .bt-sub{color:var(--brass-deep);letter-spacing:.24em}
+.nav.dark .brandmark{color:#f4f3ef}
+.nav.dark .brandmark .bt-sub{color:var(--brass-2)}
+.navlinks{display:flex;gap:4px;align-items:center}
+.navlinks a{font-size:13.5px;color:var(--muted);text-decoration:none;padding:8px 11px;border-radius:8px;transition:.2s;font-weight:500}
+.navlinks a:hover{color:var(--text);background:rgba(0,0,0,.04)}
+.navlinks a.active{color:var(--brass-deep)}
+.nav.dark .navlinks a{color:#a7a8ad}
+.nav.dark .navlinks a:hover{color:#fff;background:rgba(255,255,255,.07)}
+.nav.dark .navlinks a.active{color:var(--brass)}
+@media(max-width:860px){.navlinks{display:none}}
+
+/* ---------- hero ---------- */
+.hero{background:var(--ink);color:#f4f3ef;padding:calc(var(--nav-h) + 70px) 0 76px;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:
+  radial-gradient(900px 420px at 78% -8%,rgba(185,146,59,.16),transparent 60%),
+  radial-gradient(700px 500px at 10% 110%,rgba(185,146,59,.07),transparent 60%)}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center}
+.hero-kick{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.hero-kick .ln{height:1px;width:42px;background:var(--brass)}
+.hero h1{font-size:clamp(40px,6vw,68px);letter-spacing:-.02em;color:#fbfaf7}
+.hero h1 em{font-style:italic;color:var(--brass)}
+.hero .lede{font-size:18px;color:#c9cace;max-width:30em;margin:22px 0 30px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--sans);font-weight:600;font-size:15px;
+  border:none;cursor:pointer;border-radius:999px;padding:13px 22px;text-decoration:none;transition:.2s;line-height:1}
+.btn-primary{background:var(--brass);color:#1a1305}
+.btn-primary:hover{background:#caa44a;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:#f4f3ef;border:1px solid rgba(255,255,255,.22)}
+.btn-ghost:hover{border-color:var(--brass);color:#fff}
+.hero-meta{margin-top:26px;display:flex;gap:26px;font-size:13px;color:#90919a;font-family:var(--mono)}
+.hero-meta b{color:#e7e2d4;font-weight:500}
+
+/* console card */
+.console{background:linear-gradient(180deg,#1d1f25,#16171c);border:1px solid var(--line-dark);border-radius:18px;
+  padding:18px;box-shadow:var(--shadow-lg)}
+.console-screen{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/9;
+  background:#0c0d10 url('https://i.ytimg.com/vi/kPlLv6pC3JE/hqdefault.jpg') center/cover;cursor:pointer}
+.console-screen:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,13,16,.15),rgba(12,13,16,.72))}
+.playbtn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;width:74px;height:74px;border-radius:50%;
+  background:rgba(185,146,59,.95);display:grid;place-items:center;transition:.25s;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.console-screen:hover .playbtn{transform:translate(-50%,-50%) scale(1.07);background:var(--brass)}
+.playbtn svg{margin-left:4px}
+.console-cap{position:absolute;left:16px;bottom:14px;z-index:2;font-family:var(--mono);font-size:12px;color:#e7e2d4;letter-spacing:.04em}
+.console-cap b{color:#fff}
+.chapstrip{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+.chip{font-family:var(--mono);font-size:11.5px;letter-spacing:.03em;color:#c9cace;background:rgba(255,255,255,.06);
+  border:1px solid var(--line-dark);border-radius:7px;padding:6px 9px;cursor:pointer;transition:.18s}
+.chip:hover{background:var(--brass);color:#1a1305;border-color:var(--brass)}
+@media(max-width:880px){.hero .wrap{grid-template-columns:1fr;gap:34px}}
+
+/* ---------- section frame ---------- */
+.sec{padding:84px 0}
+.sec-head{max-width:46em;margin-bottom:40px}
+.sec-head h2{font-size:clamp(28px,4vw,40px);margin:14px 0 0}
+.sec-head p{color:var(--muted);font-size:17.5px;margin-top:14px}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+/* ---------- masterclass timeline ---------- */
+.timeline{position:relative;margin-top:8px;padding-left:30px}
+.timeline:before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--brass-soft),var(--line))}
+.tl-item{position:relative;padding:0 0 30px}
+.tl-item:before{content:"";position:absolute;left:-30px;top:6px;width:16px;height:16px;border-radius:50%;background:var(--surface);border:2px solid var(--brass);box-shadow:0 0 0 4px var(--paper)}
+.tl-time{font-family:var(--mono);font-size:12.5px;color:var(--brass-deep);font-weight:600;letter-spacing:.04em}
+.tl-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin-top:8px;box-shadow:var(--shadow);
+  display:flex;gap:18px;align-items:flex-start;justify-content:space-between;transition:.25s}
+.tl-card:hover{transform:translateX(3px);border-color:var(--brass-soft)}
+.tl-card h3{font-size:20px;margin-bottom:6px}
+.tl-card p{margin:0;color:var(--muted);font-size:15px}
+.watch{flex:none;display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#f4f3ef;border:none;cursor:pointer;
+  border-radius:999px;padding:9px 15px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.03em;transition:.2s;white-space:nowrap}
+.watch:hover{background:var(--brass);color:#1a1305}
+.watch svg{flex:none}
+/* watched / completed state (persists via localStorage) */
+.watch .ic-check{display:none}
+.tl-item.done .watch .ic-play{display:none}
+.tl-item.done .watch .ic-check{display:inline-flex}
+.tl-item.done .watch{background:var(--good);color:#f4f3ef}
+.tl-item.done .watch:hover{background:var(--good);color:#f4f3ef}
+.tl-item.done:before{background:var(--good);border-color:var(--good);
+  box-shadow:0 0 0 4px var(--paper),0 0 0 6px rgba(31,111,99,.18)}
+.tl-item.done .tl-card{border-color:rgba(31,111,99,.30)}
+.tl-progress{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:var(--mono);
+  font-size:12px;letter-spacing:.04em;color:var(--brass-deep)}
+.tl-progress .pdot{width:8px;height:8px;border-radius:50%;background:var(--good)}
+@media(max-width:620px){.tl-card{flex-direction:column;gap:12px}}
+
+/* ---------- formula ---------- */
+.formula{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.fcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);transition:.25s}
+.fcard:hover{transform:translateY(-4px);border-color:var(--brass-soft)}
+.fcard .top{background:var(--ink);color:#f4f3ef;padding:14px 16px;font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.fcard .body{padding:16px}
+.fcard .body b{display:block;margin-bottom:8px;font-size:15px}
+.fcard .ex{font-family:var(--mono);font-size:12.5px;color:var(--brass-deep);background:var(--surface-2);border:1px dashed var(--brass-soft);border-radius:8px;padding:9px 11px;margin-top:4px;line-height:1.5}
+.formula-eq{text-align:center;margin-top:22px;font-family:var(--serif);font-size:19px}
+.formula-eq b{color:var(--brass-deep)}
+@media(max-width:760px){.formula{grid-template-columns:1fr 1fr}}
+
+/* ---------- tool mock ---------- */
+.tool{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.tool.rev{grid-template-columns:.95fr 1.05fr}
+.tool.rev .mock-wrap{order:-1}
+.steps{counter-reset:s;margin:18px 0 0;padding:0;list-style:none}
+.steps li{counter-increment:s;position:relative;padding:0 0 16px 44px;color:var(--text)}
+.steps li:before{content:counter(s);position:absolute;left:0;top:-2px;width:30px;height:30px;border-radius:50%;
+  background:var(--brass-soft);color:var(--brass-deep);font-family:var(--mono);font-weight:600;font-size:14px;display:grid;place-items:center}
+.steps li b{font-weight:600}
+.mock{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.mock-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.mock-bar i{width:11px;height:11px;border-radius:50%;background:#d9d7cf;display:block}
+.mock-body{display:grid;grid-template-columns:120px 1fr;min-height:280px}
+.mock-side{background:var(--surface-2);border-right:1px solid var(--line);padding:14px 12px}
+.mock-newchat{border:1px solid var(--line);border-radius:8px;padding:8px;font-size:12px;font-weight:600;text-align:center;background:#fff}
+.mock-side .row{height:9px;background:#e7e5dd;border-radius:5px;margin-top:12px}
+.mock-pill{margin-top:12px;border:1px solid var(--line);border-radius:8px;padding:7px;font-size:11.5px;font-weight:600;text-align:center;background:#fff;display:flex;align-items:center;justify-content:center;gap:5px}
+.mock-main{padding:16px;display:flex;flex-direction:column}
+.mock-model{align-self:flex-start;border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:13px;font-weight:600;position:relative}
+.mock-reply{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:13px;color:var(--muted);margin-top:14px;max-width:88%}
+.mock-you{align-self:flex-end;background:var(--brass-soft);border-radius:10px;padding:9px 13px;font-size:13px;margin-top:10px}
+.mock-input{margin-top:auto;border:1.5px solid var(--ink);border-radius:12px;display:flex;align-items:center;gap:10px;padding:10px 12px;position:relative}
+.mock-input .plus{width:24px;height:24px;border:1.5px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:15px;flex:none}
+.mock-input span{color:var(--muted-2);font-size:13px}
+.mock-input .send{margin-left:auto;width:28px;height:28px;background:var(--ink);color:#fff;border-radius:7px;display:grid;place-items:center;flex:none}
+.pin{position:absolute;width:22px;height:22px;border-radius:50%;background:var(--brass);color:#1a1305;font-family:var(--mono);font-weight:600;font-size:12px;display:grid;place-items:center;box-shadow:0 4px 10px rgba(0,0,0,.18);z-index:3}
+.legend{margin-top:14px;display:grid;gap:7px}
+.legend div{font-size:13.5px;color:var(--muted);display:flex;gap:9px;align-items:flex-start}
+.legend b{font-family:var(--mono);background:var(--brass);color:#1a1305;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;flex:none;font-weight:600}
+@media(max-width:820px){.tool,.tool.rev{grid-template-columns:1fr;gap:26px}.tool.rev .mock-wrap{order:0}}
+
+/* before/after */
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px}
+.ba .card{border-radius:var(--r);padding:16px 18px;border:1px solid var(--line)}
+.ba .weak{background:var(--surface)}
+.ba .strong{background:var(--ink);color:#f4f3ef;border-color:var(--ink)}
+.ba .tag{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;margin-bottom:9px}
+.ba .weak .tag{color:var(--muted-2)}
+.ba .strong .tag{color:var(--brass)}
+.ba .card p{margin:0;font-size:14.5px}
+@media(max-width:620px){.ba{grid-template-columns:1fr}}
+
+/* ---------- audience split ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.acard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--shadow)}
+.acard h3{font-size:22px;display:flex;align-items:center;gap:11px}
+.acard h3 .b{font-family:var(--mono);font-size:12px;color:var(--brass-deep);border:1px solid var(--brass-soft);border-radius:6px;padding:3px 8px;font-weight:600}
+.acard ul{margin:14px 0 0;padding:0;list-style:none}
+.acard li{padding:8px 0 8px 26px;position:relative;font-size:15px;border-top:1px solid var(--line)}
+.acard li:first-child{border-top:none}
+.acard li:before{content:"";position:absolute;left:4px;top:15px;width:7px;height:7px;background:var(--brass);border-radius:2px;transform:rotate(45deg)}
+@media(max-width:760px){.split{grid-template-columns:1fr}}
+
+/* ---------- workflows ---------- */
+.wf{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.wfc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.wfc summary{list-style:none;cursor:pointer;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.wfc summary::-webkit-details-marker{display:none}
+.wfc summary h4{font-size:18px}
+.wfc summary .ar{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;flex:none;transition:.25s;color:var(--brass-deep)}
+.wfc[open] summary .ar{transform:rotate(45deg);background:var(--brass);color:#1a1305;border-color:var(--brass)}
+.wfc .inner{padding:0 20px 20px}
+.wfc .goal{color:var(--muted);font-size:14.5px;margin:0 0 12px}
+.wfc .lab{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep);font-weight:600;margin:0 0 7px}
+.wfc ol{margin:0 0 14px;padding-left:18px}
+.wfc ol li{font-size:14.5px;margin-bottom:5px}
+@media(max-width:760px){.wf{grid-template-columns:1fr}}
+
+/* prompt box w/ copy */
+.pbox{position:relative;background:var(--ink);border-radius:10px;padding:14px 46px 14px 14px;margin-top:4px}
+.pbox code{font-family:var(--mono);font-size:13px;color:#e9e2cf;line-height:1.6;white-space:pre-wrap;display:block}
+.copy{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:8px;border:1px solid var(--line-dark);
+  background:rgba(255,255,255,.06);color:#e7e2d4;display:grid;place-items:center;cursor:pointer;transition:.18s}
+.copy:hover{background:var(--brass);color:#1a1305;border-color:var(--brass)}
+.copy.done{background:var(--good);color:#fff;border-color:var(--good)}
+
+/* caution */
+.caution{background:#fff;border:1px solid var(--line);border-left:5px solid var(--ink);border-radius:var(--r);padding:22px 24px;margin-top:26px}
+.caution h4{font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.caution ul{margin:0;padding-left:20px}
+.caution li{font-size:14.5px;margin-bottom:7px}
+.caution li b{color:var(--brass-deep)}
+
+/* ---------- prompt library ---------- */
+.lib-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:22px}
+.search{flex:1;min-width:220px;display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:11px 18px}
+.search input{border:none;background:none;outline:none;font-family:var(--sans);font-size:15px;width:100%;color:var(--text)}
+.filters{display:flex;gap:7px;flex-wrap:wrap}
+.fbtn{font-family:var(--sans);font-size:13.5px;font-weight:500;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  border-radius:999px;padding:9px 15px;cursor:pointer;transition:.18s}
+.fbtn:hover{border-color:var(--brass-soft);color:var(--text)}
+.fbtn.on{background:var(--ink);color:#f4f3ef;border-color:var(--ink)}
+.lib{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.lcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px 14px;box-shadow:var(--shadow);position:relative;transition:.2s}
+.lcard:hover{border-color:var(--brass-soft)}
+.lcard .cat{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass-deep);font-weight:600}
+.lcard .pt{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--text);margin-top:9px;white-space:pre-wrap}
+.lcard .lcopy{margin-top:12px;font-family:var(--sans);font-size:12.5px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--text);border-radius:8px;padding:7px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:.18s}
+.lcard .lcopy:hover{background:var(--brass);color:#1a1305;border-color:var(--brass)}
+.lcard .lcopy.done{background:var(--good);color:#fff;border-color:var(--good)}
+.lib-empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px;font-style:italic}
+@media(max-width:760px){.lib{grid-template-columns:1fr}}
+
+/* ---------- learning path ---------- */
+.path{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.pstage{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.pstage .st{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-deep);font-weight:600}
+.pstage h4{font-size:19px;margin:6px 0 12px}
+.vlink{display:flex;align-items:center;gap:11px;padding:9px 0;border-top:1px solid var(--line);text-decoration:none;color:var(--text);font-size:14.5px;transition:.18s}
+.vlink:hover{color:var(--brass-deep)}
+.vlink .ic{width:30px;height:22px;background:var(--ink);border-radius:5px;display:grid;place-items:center;flex:none;color:#fff}
+.vlink:hover .ic{background:var(--brass);color:#1a1305}
+.vlink .len{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--muted-2)}
+@media(max-width:760px){.path{grid-template-columns:1fr}}
+
+/* ---------- footer ---------- */
+.foot{background:var(--ink);color:#c9cace;padding:60px 0 40px;margin-top:30px}
+.foot .wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:start}
+.foot h3{color:#fbfaf7;font-size:24px;margin-bottom:12px}
+.foot p{font-size:14.5px;max-width:34em}
+.foot a{color:var(--brass)}
+.foot .note{font-size:12.5px;color:#80818a;border-top:1px solid var(--line-dark);margin-top:30px;padding-top:20px;font-family:var(--mono);line-height:1.7}
+.foot .mark{font-family:var(--mono);letter-spacing:.2em;text-transform:uppercase;font-size:13px;color:#e7e2d4;font-weight:600;display:flex;align-items:center;gap:9px}
+.foot .mark .dot{width:9px;height:9px;background:var(--brass);transform:rotate(45deg)}
+@media(max-width:760px){.foot .wrap{grid-template-columns:1fr;gap:24px}}
+
+/* ---------- video modal ---------- */
+.modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
+.modal.open{display:flex}
+.scrim{position:absolute;inset:0;background:rgba(8,8,11,.78);backdrop-filter:blur(6px);opacity:0;transition:.3s}
+.modal.open .scrim{opacity:1}
+.theatre{position:relative;width:min(980px,100%);background:#0f1014;border:1px solid var(--line-dark);border-radius:16px;overflow:hidden;
+  box-shadow:var(--shadow-lg);transform:translateY(20px) scale(.98);opacity:0;transition:.32s cubic-bezier(.2,.7,.2,1)}
+.modal.open .theatre{transform:none;opacity:1}
+.theatre-top{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--line-dark)}
+.theatre-top .now{font-family:var(--mono);font-size:12.5px;color:#e7e2d4;letter-spacing:.03em}
+.theatre-top .now b{color:var(--brass)}
+.xbtn{width:32px;height:32px;border-radius:8px;border:1px solid var(--line-dark);background:rgba(255,255,255,.05);color:#e7e2d4;cursor:pointer;display:grid;place-items:center;transition:.18s}
+.xbtn:hover{background:var(--brass);color:#1a1305;border-color:var(--brass)}
+.theatre-screen{position:relative;aspect-ratio:16/9;background:#000}
+.theatre-screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.theatre-chaps{display:flex;gap:7px;overflow-x:auto;padding:12px 16px;border-top:1px solid var(--line-dark)}
+.theatre-chaps button{flex:none;font-family:var(--mono);font-size:11.5px;color:#c9cace;background:rgba(255,255,255,.05);
+  border:1px solid var(--line-dark);border-radius:7px;padding:7px 11px;cursor:pointer;transition:.16s;white-space:nowrap}
+.theatre-chaps button:hover{color:#fff;border-color:var(--brass)}
+.theatre-chaps button.cur{background:var(--brass);color:#1a1305;border-color:var(--brass)}
+
+/* toast */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#f4f3ef;
+  font-size:14px;font-weight:500;padding:12px 20px;border-radius:999px;box-shadow:var(--shadow-lg);z-index:210;opacity:0;
+  pointer-events:none;transition:.3s;display:flex;align-items:center;gap:9px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast svg{color:var(--brass)}
+
+/* misc */
+.pill-note{display:inline-flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--line);border-radius:999px;
+  padding:9px 16px;font-size:13.5px;color:var(--muted);margin-top:8px}
+.pill-note b{color:var(--brass-deep)}
+.dark-sec{background:var(--ink);color:#f4f3ef}
+.dark-sec .sec-head p{color:#a9aab0}
+.dark-sec .eyebrow{color:var(--brass)}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a class="brandmark" href="#top" aria-label="STAIR Digital">
+    <svg class="logo-mark" viewBox="0 0 262 182" aria-hidden="true">
+      <polygon points="126,1 155,83 136,180 107,94" fill="currentColor" opacity=".42"/>
+      <polygon points="126,1 214,2 261,86 155,83" fill="currentColor"/>
+      <polygon points="1,93 107,94 136,180 48,178" fill="currentColor"/>
+    </svg>
+    STAIR <span class="bt-sub">Digital</span>
+  </a>
+  <div class="navlinks" id="navlinks">
+    <a href="#mindset">Mindset</a>
+    <a href="#formula">Prompting</a>
+    <a href="#chatgpt">ChatGPT</a>
+    <a href="#claude">Claude</a>
+    <a href="#apply">Apply it</a>
+    <a href="#library">Prompts</a>
+    <a href="#path">Watch path</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="hero-kick"><span class="eyebrow">A practical training studio</span></div>
+      <h1>Learn AI by <em>doing</em>, <br>not by reading about it.</h1>
+      <p class="lede">A hands-on guide to using ChatGPT and Claude in real work, for everyday professionals and for lawyers. Every idea links to the exact moment in the masterclass, so you never have to go hunting on YouTube.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="openVideo(0)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Play the masterclass
+        </button>
+        <a class="btn btn-ghost" href="#mindset">Start the lessons</a>
+      </div>
+      <div class="hero-meta">
+        <span><b>60 min</b> masterclass</span>
+        <span><b>13</b> chapters, one click each</span>
+        <span><b>2</b> tools, 1 method</span>
+      </div>
+    </div>
+    <div class="console reveal">
+      <div class="console-screen" onclick="openVideo(0)">
+        <div class="playbtn"><svg width="26" height="26" viewBox="0 0 24 24" fill="#1a1305"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="console-cap">Ansh Mehra · <b>The Cutting Edge School</b></div>
+      </div>
+      <div class="chapstrip" id="heroChips"></div>
+    </div>
+  </div>
+</header>
+
+<!-- MINDSET / MASTERCLASS -->
+<section class="sec" id="mindset">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The masterclass, distilled</span>
+      <h2>The whole course, as a map you can jump around</h2>
+      <p>These are the ideas the course is built on, in order. Tap <b>Watch</b> on any one to open the video at that exact second. Each one you open is marked done and stays marked when you come back.</p>
+      <div class="tl-progress" id="tlProgress"><span class="pdot"></span> <span id="tlProgressText">0 of 0 watched</span></div>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</section>
+
+<!-- FORMULA -->
+<section class="sec dark-sec" id="formula">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The one skill that matters most</span>
+      <h2>The four-part prompt formula</h2>
+      <p>The gap between a useless answer and a brilliant one is almost never the tool. It is the prompt. Build every important instruction from these four parts.</p>
+    </div>
+    <div class="formula reveal">
+      <div class="fcard"><div class="top">Role</div><div class="body"><b>Who it should be</b><div class="ex">"Act as an experienced property consultant…"</div></div></div>
+      <div class="fcard"><div class="top">Task</div><div class="body"><b>What you want done</b><div class="ex">"…write a listing description…"</div></div></div>
+      <div class="fcard"><div class="top">Context</div><div class="body"><b>The facts &amp; the reader</b><div class="ex">"…a 2BHK near the metro, for a young family…"</div></div></div>
+      <div class="fcard"><div class="top">Format</div><div class="body"><b>How it should look</b><div class="ex">"…90 words, warm tone, end with a question."</div></div></div>
+    </div>
+    <p class="formula-eq reveal">Role <b>+</b> Task <b>+</b> Context <b>+</b> Format <b>=</b> a precise, reliable answer.</p>
+  </div>
+</section>
+
+<!-- CHATGPT -->
+<section class="sec" id="chatgpt">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Tutorial 01</span>
+      <h2>How to use ChatGPT</h2>
+      <p>The assistant the masterclass demonstrates in most detail. You type an instruction, it replies, you refine. Here is the screen and the first five minutes.</p>
+    </div>
+    <div class="tool reveal">
+      <div>
+        <ol class="steps">
+          <li><b>Open it.</b> Go to chatgpt.com or install the app. Create a free account.</li>
+          <li><b>Find the message box</b> at the bottom. Everything starts there.</li>
+          <li><b>Send your first prompt</b> using the four-part formula. Press enter.</li>
+          <li><b>Refine in the same box.</b> Ask for it shorter, warmer, or with a price added.</li>
+          <li><b>Attach a document</b> with the plus button to summarise a brochure or contract.</li>
+        </ol>
+        <div class="legend">
+          <div><b>1</b><span>Model selector — choose the model.</span></div>
+          <div><b>2</b><span>Attach a PDF, spreadsheet or image.</span></div>
+          <div><b>3</b><span>Type your prompt here.</span></div>
+          <div><b>4</b><span>Send, then reply to refine.</span></div>
+        </div>
+        <button class="watch" onclick="openVideo(488)" style="margin-top:18px">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Watch this in the masterclass · 8:08
+        </button>
+      </div>
+      <div class="mock-wrap">
+        <div class="mock">
+          <div class="mock-bar"><i></i><i></i><i></i></div>
+          <div class="mock-body">
+            <div class="mock-side">
+              <div class="mock-newchat">+ New chat</div>
+              <div class="row"></div><div class="row" style="width:80%"></div><div class="row" style="width:65%"></div>
+            </div>
+            <div class="mock-main">
+              <div class="mock-model">ChatGPT ▾<span class="pin" style="top:-9px;right:-9px">1</span></div>
+              <div class="mock-reply">The reply appears here. Keep replying to refine it.</div>
+              <div class="mock-you">Your message</div>
+              <div class="mock-input">
+                <span class="plus">+<span class="pin" style="top:-11px;left:-11px">2</span></span>
+                <span>Message ChatGPT…<span class="pin" style="top:-11px;left:90px">3</span></span>
+                <span class="send">↑<span class="pin" style="top:-11px;right:-11px">4</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba reveal">
+      <div class="card weak"><div class="tag">Weak prompt</div><p>Write a property description.</p></div>
+      <div class="card strong"><div class="tag">Strong prompt</div><p>Act as a property consultant. Write a 90-word description of an 850 sq ft 2BHK in Wakad, Pune, near the metro, for a young family, warm tone, ending with a call to action.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLAUDE -->
+<section class="sec" id="claude" style="background:var(--surface-2)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Tutorial 02</span>
+      <h2>How to use Claude</h2>
+      <p>A second assistant that shines on long documents and careful writing. The same four-part method applies. Use it for contracts, reports and anything where tone matters.</p>
+    </div>
+    <div class="tool rev reveal">
+      <div class="mock-wrap">
+        <div class="mock">
+          <div class="mock-bar"><i></i><i></i><i></i></div>
+          <div class="mock-body">
+            <div class="mock-side">
+              <div class="mock-newchat">+ New chat</div>
+              <div class="mock-pill">▦ Projects<span class="pin" style="top:-11px;right:-11px">1</span></div>
+              <div class="row"></div><div class="row" style="width:70%"></div>
+            </div>
+            <div class="mock-main">
+              <div class="mock-reply" style="margin-top:0">Claude reads long documents carefully and writes in the tone you ask for.</div>
+              <div class="mock-input">
+                <span class="plus">+<span class="pin" style="top:-11px;left:-11px">2</span></span>
+                <span>Reply to Claude…<span class="pin" style="top:-11px;left:78px">3</span></span>
+                <span class="send">↑</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <ol class="steps">
+          <li><b>Open it.</b> Go to claude.ai or install the app. Create a free account.</li>
+          <li><b>Type your prompt</b> with the same role, task, context, format structure.</li>
+          <li><b>Upload long files.</b> Claude is comfortable with whole contracts and reports.</li>
+          <li><b>Use Projects</b> to store documents and instructions for an ongoing matter.</li>
+          <li><b>Control the tone.</b> Ask for formal British English or your firm's house style.</li>
+        </ol>
+        <div class="legend">
+          <div><b>1</b><span>Projects — keep an ongoing matter's files and rules in one place.</span></div>
+          <div><b>2</b><span>Attach documents to read and compare.</span></div>
+          <div><b>3</b><span>Type your prompt, then refine.</span></div>
+        </div>
+        <div class="pill-note"><b>Note</b> The masterclass centres on ChatGPT. Claude follows the same method, so everything you just learned carries straight over.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLY -->
+<section class="sec" id="apply">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Put it to work</span>
+      <h2>For a lawyer, and for everyone else</h2>
+      <p>The same tools, pointed at real tasks. Lawyers get detailed workflows with the cautions that matter; everyone else gets the everyday wins.</p>
+    </div>
+
+    <div class="split reveal">
+      <div class="acard">
+        <h3><span class="b">For everyone</span> Everyday wins</h3>
+        <ul>
+          <li>Draft and tidy emails, messages and applications</li>
+          <li>Explain anything confusing, from a bill to a contract, in plain words</li>
+          <li>Plan a trip, a week, or a study schedule</li>
+          <li>Summarise long articles, reports or videos into the key points</li>
+          <li>Compare two options, like insurance policies, in a table</li>
+          <li>Learn a new subject at exactly your level</li>
+        </ul>
+      </div>
+      <div class="acard">
+        <h3><span class="b">For lawyers</span> Strong, lower-risk uses</h3>
+        <ul>
+          <li>Summarise long judgments and contracts into plain English</li>
+          <li>Draft routine correspondence and internal notes</li>
+          <li>Build a dated chronology from a bundle of documents</li>
+          <li>Compare two drafts clause by clause</li>
+          <li>Explain a difficult position to a client simply</li>
+          <li>Stress-test arguments by asking for the other side's case</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="font-size:24px;margin:42px 0 18px" class="reveal">Lawyer workflows</h3>
+    <div class="wf reveal" id="workflows"></div>
+
+    <div class="caution reveal">
+      <h4>⚠ The non-negotiable cautions for legal work</h4>
+      <ul>
+        <li><b>Verify every citation.</b> AI can invent cases, statutes and quotes that look real. Check every authority against the primary source.</li>
+        <li><b>Protect confidentiality.</b> Do not paste privileged or client-identifying material into a consumer tool without checking your policy and the tool's data settings.</li>
+        <li><b>It is not legal advice.</b> Every output is a drafting aid. Judgement, and the duty to client and court, stay with you.</li>
+        <li><b>Mind the jurisdiction.</b> Court and bar guidance on AI is still developing. Keep a human firmly in the loop.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- LIBRARY -->
+<section class="sec" id="library" style="background:var(--surface-2)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Copy, paste, adapt</span>
+      <h2>The prompt library</h2>
+      <p>Ready-made prompts you can copy with one tap. Search by keyword or filter by who they are for. Replace anything in brackets.</p>
+    </div>
+    <div class="lib-controls reveal">
+      <label class="search">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="libSearch" type="text" placeholder="Search prompts…" />
+      </label>
+      <div class="filters" id="libFilters">
+        <button class="fbtn on" data-f="all">All</button>
+        <button class="fbtn" data-f="lawyer">Lawyers</button>
+        <button class="fbtn" data-f="pro">Professionals</button>
+        <button class="fbtn" data-f="life">Everyday</button>
+      </div>
+    </div>
+    <div class="lib" id="lib"></div>
+  </div>
+</section>
+
+<!-- PATH -->
+<section class="sec" id="path">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Keep learning</span>
+      <h2>A guided watch path</h2>
+      <p>Work through Ansh Mehra's free course in this order. Masterclass chapters open right here at the exact moment; the others open on his channel.</p>
+    </div>
+    <div class="path reveal" id="path"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="wrap">
+    <div>
+      <div class="mark"><span class="dot"></span> STAIR Digital</div>
+      <h3 style="margin-top:14px">AI, made practical.</h3>
+      <p>An interactive training studio built on the AI masterclass of Ansh Mehra, The Cutting Edge School. Designed so a professional with zero AI experience can start using these tools today.</p>
+      <a class="btn btn-primary" href="#top" style="margin-top:8px">Back to the top</a>
+    </div>
+    <div>
+      <div class="mono" style="font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#80818a;margin-bottom:14px">Sources</div>
+      <a class="vlink" href="https://www.youtube.com/watch?v=kPlLv6pC3JE" target="_blank" rel="noopener" style="border:none;color:#c9cace">↗ The masterclass on YouTube</a>
+      <a class="vlink" href="https://www.youtube.com/@CuttingEdgeSchool" target="_blank" rel="noopener" style="border:none;color:#c9cace">↗ The Cutting Edge School channel</a>
+      <a class="vlink" href="https://www.howtoprompt.in/" target="_blank" rel="noopener" style="border:none;color:#c9cace">↗ howtoprompt.in</a>
+      <p class="note">Always verify any price, figure, citation or legal detail before relying on it. Do not share confidential or client information in a free AI tool. This studio is a learning aid, not legal advice.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span id="toastMsg">Copied</span></div>
+
+<script>
+const VIDEO="kPlLv6pC3JE";
+const fmt=s=>{const m=Math.floor(s/60),x=s%60;return m+":"+String(x).padStart(2,"0")};
+
+/* ---- masterclass chapters ---- */
+const CHAPTERS=[
+  {t:0,   title:"What AI really is", d:"A grounded start: an AI assistant is a very well-read writing partner, not a database and not always right."},
+  {t:110, title:"Designing the future: a live demo", d:"Watch AI move from a vague idea to something concrete in seconds. It is a thinking partner, not a novelty."},
+  {t:429, title:"First principles & reality checks", d:"Strip a problem to its basics and sanity-check what you get back. Fluent does not mean correct."},
+  {t:488, title:"How to talk to AI: the prompt", d:"The quality of your instruction drives the quality of the result. This is the core skill."},
+  {t:664, title:"The big misconception", d:"AI is a part of the process, not the whole, and not a replacement. It augments you; the judgement stays yours."},
+  {t:1183,title:"Make AI do the slow work", d:"Separate execution (delegate) from ideation (keep). The biggest time savings come from offloading the routine."},
+  {t:1480,title:"The checklist for consistency", d:"Be precise: set the role, the context, the constraints and the format. Specificity is the cheapest quality boost."},
+  {t:2053,title:"Going further: data & files", d:"AI is not only for writing. It can read your spreadsheet, chart it, and answer questions about a document."},
+  {t:2240,title:"Free alternatives", d:"You are not locked into one tool. Comparing answers across assistants is good practice in itself."},
+  {t:2451,title:"Prompting is the new googling", d:"Knowing how to prompt is becoming as fundamental, and as valuable, as knowing how to search."},
+  {t:2749,title:"Image generation with Midjourney", d:"The same principle, applied to images: specificity and parameters control the result."},
+  {t:3052,title:"Render engines & styles", d:"Naming a specific style or engine steers the look. Precise instruction wins again."},
+  {t:3495,title:"The big hack for ideas", d:"Use AI to generate and then attack ideas, as a sceptical investor would, to pressure-test them fast."}
+];
+
+/* ---- open the exact moment on YouTube ---- */
+function nearestChap(sec){let c=CHAPTERS[0];for(const ch of CHAPTERS){if(ch.t<=sec)c=ch;}return c;}
+function openVideo(sec){
+  const s=Math.max(0,Math.floor(sec));
+  const a=document.createElement("a");
+  a.href="https://www.youtube.com/watch?v="+VIDEO+"&t="+s+"s";
+  a.target="_blank";a.rel="noopener";
+  document.body.appendChild(a);a.click();a.remove();
+}
+
+/* ---- hero chips ---- */
+document.getElementById("heroChips").innerHTML=
+  [0,664,1183,1480,2749].map(t=>{const c=nearestChap(t);return `<span class="chip" data-t="${t}">▶ ${fmt(t)} · ${c.title}</span>`;}).join("");
+document.querySelectorAll("#heroChips .chip").forEach(ch=>ch.onclick=()=>openVideo(+ch.dataset.t));
+
+/* ---- timeline (with persistent watched state) ---- */
+const PKEY="stair_ai_studio_watched_v1";
+function getWatched(){try{return JSON.parse(localStorage.getItem(PKEY))||[]}catch(e){return []}}
+function saveWatched(a){try{localStorage.setItem(PKEY,JSON.stringify(a))}catch(e){}}
+let watched=getWatched();
+
+const tlEl=document.getElementById("timeline");
+tlEl.innerHTML=CHAPTERS.map((c,i)=>`
+  <div class="tl-item${watched.includes(i)?' done':''}" data-i="${i}">
+    <div class="tl-time">${fmt(c.t)}</div>
+    <div class="tl-card">
+      <div><h3>${c.title}</h3><p>${c.d}</p></div>
+      <button class="watch" data-t="${c.t}" data-i="${i}">
+        <svg class="ic-play" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg class="ic-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <span class="lbl">${watched.includes(i)?"Watched":"Watch"}</span>
+      </button>
+    </div>
+  </div>`).join("");
+
+function updateProgress(){
+  const t=document.getElementById("tlProgressText");
+  if(t)t.textContent=watched.length+" of "+CHAPTERS.length+" watched";
+}
+function markWatched(i){
+  if(!watched.includes(i)){watched.push(i);saveWatched(watched);}
+  const item=tlEl.querySelector('.tl-item[data-i="'+i+'"]');
+  if(item){item.classList.add("done");const l=item.querySelector(".lbl");if(l)l.textContent="Watched";}
+  updateProgress();
+}
+tlEl.querySelectorAll(".watch").forEach(b=>b.onclick=()=>{
+  openVideo(+b.dataset.t);
+  markWatched(+b.dataset.i);
+});
+updateProgress();
+
+/* ---- workflows ---- */
+const WORKFLOWS=[
+  {h:"Contract review",g:"Spot risks and obligations fast.",s:["Upload the contract.","Ask for a plain-English summary and every obligation on your client.","Ask it to flag unusual or one-sided clauses.","Verify each flag against the text."],p:"Review this contract for my client, the buyer. List every obligation on us, every deadline, and any clause that is unusual or one-sided, with the clause number for each."},
+  {h:"Due diligence",g:"Get through a large document set.",s:["Upload documents in batches.","Ask for a two-line summary of each.","Ask it to flag change-of-control or assignment clauses.","Trace every flag to its source."],p:"For each attached document, give a two-line summary and note any change of control, assignment, exclusivity or termination clause, with the document name."},
+  {h:"Case summarisation",g:"Turn a long judgment into notes.",s:["Upload the judgment.","Ask for facts, issues, holding and reasoning.","Ask for the ratio in two sentences.","Check against the judgment."],p:"Summarise this judgment: facts, issues, holding, reasoning, and the ratio in two sentences. Note any strong dicta with the paragraph number."},
+  {h:"Legal research framing",g:"Map the issues — never cite blind.",s:["Describe the facts.","Ask what issues arise and the arguments on each side.","Take those questions to a real database.","Never cite a case it names unread."],p:"Here are the facts. What legal issues arise, what questions should I research, and what are the competing arguments on each? Do not cite specific cases."},
+  {h:"Client advisory note",g:"Explain a complex position simply.",s:["Paste your analysis.","Ask for a plain-English client note.","Ask for the practical options.","Add the formal caveats."],p:"Turn this analysis into a one-page client note in plain English: the position, what it means in practice, and the options, with no jargon."},
+  {h:"Document comparison",g:"Find every change between drafts.",s:["Upload both versions.","Ask for a clause-by-clause comparison table.","Ask it to flag shifts in obligations or liability.","Confirm anything that disadvantages your client."],p:"Compare these two drafts clause by clause in a table and flag every change that affects obligations, liability or termination."}
+];
+document.getElementById("workflows").innerHTML=WORKFLOWS.map((w,i)=>`
+  <details class="wfc" ${i===0?"open":""}>
+    <summary><h4>${w.h}</h4><span class="ar">+</span></summary>
+    <div class="inner">
+      <p class="goal">${w.g}</p>
+      <p class="lab">Steps</p>
+      <ol>${w.s.map(x=>`<li>${x}</li>`).join("")}</ol>
+      <p class="lab">Sample prompt</p>
+      <div class="pbox"><code>${w.p}</code><button class="copy" aria-label="Copy prompt" data-copy="${encodeURIComponent(w.p)}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+      </button></div>
+    </div>
+  </details>`).join("");
+
+/* ---- prompt library ---- */
+const PROMPTS=[
+  {c:"lawyer",t:"Summarise this contract in plain English in one page, then list every obligation on my client."},
+  {c:"lawyer",t:"Extract all dates, deadlines and notice periods from this agreement into a table."},
+  {c:"lawyer",t:"Flag any unusual, one-sided or missing clauses in this contract, with clause numbers."},
+  {c:"lawyer",t:"Explain this clause to a client with no legal training, in three sentences."},
+  {c:"lawyer",t:"Compare these two drafts clause by clause and flag every substantive change."},
+  {c:"lawyer",t:"Summarise this judgment: facts, issues, holding, reasoning and ratio."},
+  {c:"lawyer",t:"Create a dated chronology of events from these documents."},
+  {c:"lawyer",t:"List the legal issues these facts raise and the arguments on each side, without citing cases."},
+  {c:"lawyer",t:"Draft a plain-English client update on the status and next steps of this matter."},
+  {c:"lawyer",t:"Build a compliance checklist from this regulation for a company to follow."},
+  {c:"lawyer",t:"Draft cross-examination questions on these three topics from this witness statement."},
+  {c:"lawyer",t:"Turn these time entries into clear, client-ready billing narratives."},
+  {c:"pro",t:"Summarise this report in 150 words, then list the five key decisions it points to."},
+  {c:"pro",t:"Write an executive summary of this document for a busy director."},
+  {c:"pro",t:"Draft a friendly email asking for an overdue update, in under 120 words."},
+  {c:"pro",t:"Draft an agenda for a 45-minute meeting on this topic with clear outcomes."},
+  {c:"pro",t:"Turn these meeting notes into minutes with decisions and action items."},
+  {c:"pro",t:"Run a SWOT analysis for this business idea."},
+  {c:"pro",t:"Lay out three pricing options for this product in a comparison table."},
+  {c:"pro",t:"Give me step-by-step instructions to clean and standardise this messy data."},
+  {c:"pro",t:"Explain and write the spreadsheet formula to do this calculation."},
+  {c:"pro",t:"Outline a 10-slide pitch for this proposal."},
+  {c:"pro",t:"Write a balanced performance review from these notes."},
+  {c:"pro",t:"Give me twenty ideas for this problem, then group them into themes."},
+  {c:"life",t:"Explain this concept simply, then again at a deeper level."},
+  {c:"life",t:"Build a two-week study plan for this exam from this syllabus."},
+  {c:"life",t:"Summarise this long article into the ten points I must remember."},
+  {c:"life",t:"Draft a firm but polite letter to my landlord about an unfixed repair, under 200 words."},
+  {c:"life",t:"Compare these two insurance policies in a table with pros and cons."},
+  {c:"life",t:"Have a beginner-level conversation with me in French and correct my mistakes."},
+  {c:"life",t:"Plan a 5-day trip to this city with a relaxed pace and a daily schedule."},
+  {c:"life",t:"Explain this medical letter in plain words, and list questions to ask my doctor."},
+  {c:"life",t:"Give me an honest review of the writing below and three specific fixes."},
+  {c:"life",t:"Quiz me on this chapter, one question at a time, and keep score."},
+  {c:"life",t:"Turn this recipe into a shopping list grouped by aisle."},
+  {c:"life",t:"Draft a warm thank-you message for a gift, keeping it short and personal."}
+];
+const CATLABEL={lawyer:"Lawyers",pro:"Professionals",life:"Everyday"};
+let libFilter="all",libQuery="";
+function renderLib(){
+  const q=libQuery.trim().toLowerCase();
+  const items=PROMPTS.filter(p=>(libFilter==="all"||p.c===libFilter)&&(!q||p.t.toLowerCase().includes(q)));
+  const el=document.getElementById("lib");
+  if(!items.length){el.innerHTML='<div class="lib-empty">No prompts match that search. Try a different word.</div>';return;}
+  el.innerHTML=items.map(p=>`
+    <div class="lcard">
+      <div class="cat">${CATLABEL[p.c]}</div>
+      <div class="pt">${p.t}</div>
+      <button class="lcopy" data-copy="${encodeURIComponent(p.t)}">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg> Copy
+      </button>
+    </div>`).join("");
+  bindCopy();
+}
+document.getElementById("libSearch").addEventListener("input",e=>{libQuery=e.target.value;renderLib();});
+document.querySelectorAll("#libFilters .fbtn").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#libFilters .fbtn").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");libFilter=b.dataset.f;renderLib();
+});
+
+/* ---- watch path ---- */
+const ch=q=>"https://www.youtube.com/@CuttingEdgeSchool/search?query="+encodeURIComponent(q);
+const PATH=[
+  {st:"Stage 1 · Foundations",items:[
+    {label:"Basics of AI Masterclass (the spine)",len:"60:00",video:0},
+    {label:"Why AI Cannot Replace Humans",len:"16:18",url:ch("Why AI Cannot Replace Humans Ansh Mehra")},
+    {label:"What is ChatGPT — step by step",len:"14:34",url:ch("What is ChatGPT Step by Step Tutorial For Beginners Ansh Mehra")}
+  ]},
+  {st:"Stage 2 · Prompting",items:[
+    {label:"Prompt Engineering for Beginners",len:"10:54",url:ch("ChatGPT Tutorial Prompt Engineering Tutorial for Beginners Ansh Mehra")},
+    {label:"ChatGPT Masterclass: Basic to Advanced",len:"43:39",url:ch("ChatGPT Masterclass Basic to Advanced in 4 Easy Steps Ansh Mehra")},
+    {label:"The checklist for consistent results",len:"24:40",video:1480}
+  ]},
+  {st:"Stage 3 · Everyday productivity",items:[
+    {label:"Secret ways to learn faster with ChatGPT",len:"16:04",url:ch("Secret ways to learn FASTER using ChatGPT Ansh Mehra")},
+    {label:"5 ChatGPT uses for Excel & documents",len:"14:53",url:ch("5 ChatGPT Uses for Excel Documents and Links Ansh Mehra")},
+    {label:"Data & files in the masterclass",len:"34:13",video:2053}
+  ]},
+  {st:"Stage 4 · Custom assistants",items:[
+    {label:"How to Make GPT Bots",len:"53:02",url:ch("How to make GPT Bots Ansh Mehra")},
+    {label:"How to use ChatGPT 4o",len:"15:12",url:ch("How to use ChatGPT 4o Ansh Mehra")},
+    {label:"What AI Skills Should You Learn",len:"16:15",url:ch("What AI Skills Should You Learn Ansh Mehra")}
+  ]}
+];
+document.getElementById("path").innerHTML=PATH.map(s=>`
+  <div class="pstage">
+    <div class="st">${s.st}</div>
+    <h4>${s.items.length} videos</h4>
+    ${s.items.map(it=>{
+      const ic='<span class="ic"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>';
+      if(it.video!==undefined) return `<a class="vlink" data-v="${it.video}" href="javascript:void(0)">${ic}<span>${it.label}</span><span class="len">${it.len}</span></a>`;
+      return `<a class="vlink" href="${it.url}" target="_blank" rel="noopener">${ic}<span>${it.label}</span><span class="len">${it.len} ↗</span></a>`;
+    }).join("")}
+  </div>`).join("");
+document.querySelectorAll('#path .vlink[data-v]').forEach(a=>a.onclick=()=>openVideo(+a.dataset.v));
+
+/* ---- copy ---- */
+function bindCopy(){
+  document.querySelectorAll("[data-copy]").forEach(b=>{
+    if(b._bound)return;b._bound=true;
+    b.addEventListener("click",async()=>{
+      const txt=decodeURIComponent(b.dataset.copy);
+      try{await navigator.clipboard.writeText(txt);}catch(e){
+        const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();
+        try{document.execCommand("copy");}catch(_){}document.body.removeChild(ta);
+      }
+      b.classList.add("done");const orig=b.innerHTML;
+      if(b.classList.contains("lcopy"))b.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Copied';
+      showToast("Prompt copied to clipboard");
+      setTimeout(()=>{b.classList.remove("done");if(b.classList.contains("lcopy"))b.innerHTML=orig;},1600);
+    });
+  });
+}
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById("toast");document.getElementById("toastMsg").textContent=msg;
+  t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),1800);
+}
+
+/* ---- init ---- */
+renderLib();bindCopy();
+
+/* ---- scroll: progress, nav, reveal, active ---- */
+const nav=document.getElementById("nav");
+const sections=[...document.querySelectorAll("section[id], header#top")];
+function onScroll(){
+  const st=document.documentElement.scrollTop||document.body.scrollTop;
+  const h=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+  document.getElementById("progress").style.width=(h>0?(st/h*100):0)+"%";
+  nav.classList.toggle("dark",st<document.querySelector(".hero").offsetHeight-80);
+}
+window.addEventListener("scroll",onScroll,{passive:true});onScroll();
+
+const reveals=document.querySelectorAll(".reveal");
+const ro=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");ro.unobserve(e.target);}}),{threshold:.12});
+reveals.forEach(r=>ro.observe(r));
+
+const navMap={};document.querySelectorAll(".navlinks a").forEach(a=>navMap[a.getAttribute("href").slice(1)]=a);
+const so=new IntersectionObserver((es)=>es.forEach(e=>{
+  if(e.isIntersecting){Object.values(navMap).forEach(a=>a.classList.remove("active"));const a=navMap[e.target.id];if(a)a.classList.add("active");}
+}),{rootMargin:"-45% 0px -50% 0px"});
+document.querySelectorAll("section[id]").forEach(s=>so.observe(s));
+</script>
+</body>
+</html>
